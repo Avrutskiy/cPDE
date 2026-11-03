@@ -1,0 +1,38 @@
+--- a/cuda/cpde_server.cu
++++ b/cuda/cpde_server.cu
+@@ -1,4 +1,5 @@
+ #include <atomic>
++#include <chrono>
+ #include <condition_variable>
+ #include <deque>
+ #include <memory>
+@@ -550,6 +551,29 @@
+             }catch(...){if(gradient)restore(n,saved);throw;}
+             if(gradient)restore(n,saved);
+         }else if(op==15){train(b,stop,true);return;}
++        else if(op==90){ // Benchmark-only command; numerical kernels are unchanged.
++            auto ni=b.get<uint64_t>();auto& n=net(ni);auto ci=b.get<uint64_t>();
++            int warm=b.get<int>(),iterations=b.get<int>(),batches=b.get<int>();b.end();
++            require(warm>=0&&iterations>0&&batches>0,"invalid benchmark controls");
++            std::vector<uint64_t> ids{ci};prepare_costs(n,ids,ni);
++            auto stream=*n.gpu->str->exec;
++            auto step=[&](){n.reductions.begin(1,stream);bool first=true;pass<true>(n,lookup(costs,ci),0,true,first);};
++            for(int i=0;i<warm;++i)step();checkCudaErrors(cudaStreamSynchronize(stream));
++            cudaEvent_t start,end;checkCudaErrors(cudaEventCreate(&start));checkCudaErrors(cudaEventCreate(&end));
++            std::vector<double> wall,gpu;
++            for(int batch=0;batch<batches;++batch){
++                auto begin=std::chrono::steady_clock::now();checkCudaErrors(cudaEventRecord(start,stream));
++                for(int i=0;i<iterations;++i)step();
++                checkCudaErrors(cudaEventRecord(end,stream));checkCudaErrors(cudaEventSynchronize(end));
++                auto done=std::chrono::steady_clock::now();float elapsed=0;checkCudaErrors(cudaEventElapsedTime(&elapsed,start,end));
++                wall.push_back(std::chrono::duration<double,std::milli>(done-begin).count()/iterations);gpu.push_back(elapsed/iterations);
++            }
++            checkCudaErrors(cudaEventDestroy(start));checkCudaErrors(cudaEventDestroy(end));out.array(wall);out.array(gpu);
++            inspect_gradients(n);n.reductions.download(1,n.neurons.size()-1,stream);
++            std::vector<double> values(1);validate_costs(n,ids,values,false);out.put<double>(values[0]);
++            for(layer* l=n.gpu->layers;l->W_plus;l=l->next){auto& w=*l->W_plus;std::vector<float> g(w.Wh*(w.Ww+1));
++                checkCudaErrors(cudaMemcpy(g.data(),w.act_grad_W()->mem->vals,g.size()*sizeof(float),cudaMemcpyDeviceToHost));out.array(g);}
++        }
+         else require(false,"unknown command");
+         wire::send(0,out);
+     }

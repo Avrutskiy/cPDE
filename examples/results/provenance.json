@@ -1,0 +1,396 @@
+{
+  "fit_function_vanilla": {
+    "source_run": "output/examples/rtx3090-delivery-gpu-rerun-20261102",
+    "source_name": "fit_function_vanilla",
+    "source_sha256": {
+      "fit_function_vanilla.json": "fdd2e1f78d3c98153ddab9d548fa565e2658235bf3f004191b7fc8b2d257b46d",
+      "fit_function_vanilla.npz": "74319d37e1c08c02dc54c389315f0c8195078eb3629e2a7c3a7c2fcf56836e4e"
+    },
+    "backend": "CUDA server",
+    "status": "completed",
+    "updates": 1500,
+    "metrics": {
+      "training_value_rmse": 0.011389828150245836,
+      "dense_value_rmse": 0.014680943856815206,
+      "dense_value_relative_l2": 0.020842597416302774,
+      "dense_rmse_per_row": [
+        0.014680943856815206
+      ],
+      "dense_rmse_over_target_std_per_row": [
+        0.021503761599950197
+      ],
+      "dense_nonfinite_predictions_per_row": [
+        0
+      ],
+      "dense_max_abs_value_error": 0.10577938476671395
+    },
+    "train_calls": [
+      {
+        "epochs": 1500,
+        "optimizer": "rprop",
+        "seconds": 1.3386836000718176,
+        "E": null,
+        "phase": "main",
+        "restore_every": 0,
+        "restore_step": null
+      }
+    ],
+    "figure_sha256": {
+      "fit_function_vanilla.png": "b0208e04af8bd3eb1dfcb3620907aee01015e67ba691d7be5de034e6511180c8",
+      "fit_function_vanilla.pdf": "ea2e8aef2af8deb73a9fb057d194bafaca43157701cebb7ac0b32df546f15230"
+    }
+  },
+  "fit_function": {
+    "source_run": "output/examples/rtx3090-delivery-gpu-rerun-20261102",
+    "source_name": "fit_function",
+    "source_sha256": {
+      "fit_function.json": "0a181baf40ec0c65b1dd90d1e65abea032514b494d593b02c840fee4c153cab0",
+      "fit_function.npz": "c8ac4a72ca6598c8a8b34df6f38fdd2d740133edeb938c9a9aabe54f28e73eb1"
+    },
+    "backend": "CUDA server",
+    "status": "completed",
+    "updates": 1500,
+    "metrics": {
+      "training_value_rmse": 0.00021717628326039956,
+      "dense_value_rmse": 0.00020878313069236888,
+      "dense_value_relative_l2": 0.00029641028416005263,
+      "dense_rmse_per_row": [
+        0.00020878313069236888,
+        0.0020895413118523936,
+        0.0010889055070018125,
+        0.050347348988725435,
+        0.009576785852105673,
+        0.02520514979756953,
+        2.043835941034161,
+        0.3181505666308743,
+        0.2770167673531209,
+        1.001993679025889
+      ],
+      "dense_rmse_over_target_std_per_row": [
+        0.0003058129444733056,
+        0.0011251852972619662,
+        0.0005224729232249192,
+        0.003762083504985876,
+        0.0021562180133538073,
+        0.002147526578826541,
+        0.016411639878486355,
+        0.012460232475045002,
+        0.00983342189101696,
+        0.01154711426555177
+      ],
+      "dense_nonfinite_predictions_per_row": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "dense_max_abs_value_error": 0.001014305149180439
+    },
+    "train_calls": [
+      {
+        "epochs": 1500,
+        "optimizer": "rprop",
+        "seconds": 3.410498300101608,
+        "E": null,
+        "phase": "main",
+        "restore_every": 0,
+        "restore_step": null
+      }
+    ],
+    "figure_sha256": {
+      "fit_function.png": "1a0b44d658c5625e552ac73ba9ea056a73ed8edf83f33a47caa762b157aa10b7",
+      "fit_function.pdf": "57468dc47cf6b67bf9266cca7fff978d559a0defc7b9dba602475e8292ae27cf"
+    }
+  },
+  "fit_function_explicit": {
+    "source_run": "output/examples/rtx3090-explicit-guide-20261103",
+    "source_name": "fit_function_explicit",
+    "source_sha256": {
+      "fit_function_explicit.json": "a48303f92f3ffbfeea2e17d45cbc2f00e6c3ff7cc29b528ea60593d2249bc9ed",
+      "fit_function_explicit.npz": "5f5679c5352be2b2d4fce0265cca77b822be5180877ede508c00e7079723ac9c"
+    },
+    "backend": "CUDA server",
+    "status": "completed",
+    "updates": 1500,
+    "metrics": {
+      "training_value_rmse": 0.0027527017748619014,
+      "dense_value_rmse": 0.00222729057142789,
+      "dense_value_relative_l2": 0.003162093742892979,
+      "dense_rmse_per_row": [
+        0.00222729057142789,
+        0.0862013372147094,
+        0.054861253183924284
+      ],
+      "dense_rmse_over_target_std_per_row": [
+        0.0032624009688292798,
+        0.04641807112792963,
+        0.026323238461443115
+      ],
+      "dense_nonfinite_predictions_per_row": [
+        0,
+        0,
+        0
+      ],
+      "dense_max_abs_value_error": 0.015202126851600384
+    },
+    "train_calls": [
+      {
+        "epochs": 1500,
+        "optimizer": "rprop",
+        "seconds": 1.8318547999951988,
+        "E": null,
+        "phase": "main",
+        "restore_every": 0,
+        "restore_step": null
+      }
+    ],
+    "figure_sha256": {
+      "fit_function_explicit.png": "eefc48b734f9c665212441a9ebec94325c41d1bad298bb2e78de07e613465c9e",
+      "fit_function_explicit.pdf": "4d771a0637c8b871af75a3e6ef77582db77a956501808f529323b661d678da80"
+    }
+  },
+  "poisson_disk_vanilla": {
+    "source_run": "output/examples/rtx3090-delivery-gpu-rerun-20261102",
+    "source_name": "poisson_disk_vanilla",
+    "source_sha256": {
+      "poisson_disk_vanilla.json": "175dc4a209c4327aa03477704556de84ffab397f4286289c32e04c6c0c7a33ed",
+      "poisson_disk_vanilla.npz": "91863d00660c88221ad3618b4e09018979aec73a00bd56e00418c0a2de81cbfa"
+    },
+    "backend": "CUDA server",
+    "status": "completed",
+    "updates": 3000,
+    "metrics": {
+      "dense_value_rmse": 0.0001667122796724735,
+      "dense_value_relative_l2": 0.0011533437819013224,
+      "dense_pde_rms": 0.0010390632077881784,
+      "boundary_value_rms": 0.00047568153899344156,
+      "boundary_tangent_rms": 0.0033853355073873714,
+      "mesh_area": 3.13936858055489
+    },
+    "train_calls": [
+      {
+        "epochs": 3000,
+        "optimizer": "rprop",
+        "seconds": 8.396129299886525,
+        "E": null,
+        "phase": "main",
+        "restore_every": 0,
+        "restore_step": null
+      }
+    ],
+    "figure_sha256": {
+      "poisson_disk_vanilla.png": "b7d9cf15960c5b870c7acff162f4b95e9590779865641b03c200536135b53532",
+      "poisson_disk_vanilla.pdf": "0e794db4bbc2c670e2b55d9e9503bdfd90a44a6ea19a6028c386d193c3a9fad4"
+    }
+  },
+  "poisson_disk": {
+    "source_run": "output/examples/rtx3090-delivery-gpu-rerun-20261102",
+    "source_name": "poisson_disk",
+    "source_sha256": {
+      "poisson_disk.json": "fa13bfee442927983d912d29946d9893c7835dc4f157316b82348e3647564df7",
+      "poisson_disk.npz": "042305a9874879ee4dc57fa55da59fb273ddfcafbc4212fad498615dad03ad78"
+    },
+    "backend": "CUDA server",
+    "status": "completed",
+    "updates": 3000,
+    "metrics": {
+      "dense_value_rmse": 1.648928932003284e-05,
+      "dense_value_relative_l2": 0.00011407569581913566,
+      "dense_pde_rms": 0.00013801970719017618,
+      "boundary_value_rms": 3.0995455335909545e-05,
+      "boundary_tangent_rms": 0.00022311829812818554,
+      "mesh_area": 3.13936858055489
+    },
+    "train_calls": [
+      {
+        "epochs": 3000,
+        "optimizer": "rprop",
+        "seconds": 13.999863700009882,
+        "E": null,
+        "phase": "main",
+        "restore_every": 0,
+        "restore_step": null
+      }
+    ],
+    "figure_sha256": {
+      "poisson_disk.png": "53fa57a23bae706e741dc35957e7ba45781a485ada0b66305e835d9bea00f8ff",
+      "poisson_disk.pdf": "8c91255cf87c8d0f8153fe1109497b6968b66978b882e6735a6d2c458c712228"
+    }
+  },
+  "schrodinger_circle_vanilla": {
+    "source_run": "output/examples/rtx3090-circle-dense-20261103",
+    "source_name": "schrodinger_circle_projection_vanilla",
+    "source_sha256": {
+      "schrodinger_circle_projection_vanilla.json": "d2fae2d56581bdfa39fb773b0d528d8cba34ff19fe1cd2ceb45b11cc70f976d4",
+      "schrodinger_circle_projection_vanilla.npz": "9e1621e875a6d63864a978dcf3269f064d4e8e1ceffd23c3dbc2009e491ae1f3"
+    },
+    "backend": "CUDA server",
+    "status": "completed",
+    "updates": 2000,
+    "metrics": {
+      "E": 5.782953330242573,
+      "normalization_integral": 0.9999932937260663,
+      "normalization_error": -6.706273933732021e-06,
+      "training_pde_rms": 0.0024775906462186988,
+      "heldout_pde_rms": 0.004520545960013531,
+      "heldout_normalization_integral": 1.0048084791605894,
+      "boundary_value_rms": 0.0006824315600845951,
+      "boundary_tangent_rms": 0.004472008464519758,
+      "boundary_second_tangent_rms": 0.03430910765860069,
+      "heldout_boundary_value_rms": 0.0006824191208450912,
+      "heldout_boundary_tangent_rms": 0.0044714288182420075,
+      "heldout_boundary_second_tangent_rms": 0.03436514550697176,
+      "heldout_boundary_pde_rms": 0.005510387499779044,
+      "boundary_residual_training_rms": 0.004497978218448968,
+      "bulk_points": 305,
+      "boundary_points": 64,
+      "dense_grid_normalization": 1.000304182003771,
+      "exact_energy": 5.783185962946783,
+      "energy_relative_error": 4.02257001073103e-05,
+      "dense_value_relative_l2": 0.0004914865380968417,
+      "dense_value_max_abs_error": 0.0016127963060758622,
+      "dense_shape_relative_l2": 0.00046733233512114724,
+      "exact_training_quadrature_mass": 0.9996897253068212,
+      "sign_alignment": -1,
+      "projection_A": 33.44234307655208,
+      "projection_B": 5.782914548173395,
+      "projection_C": 0.9999932937260663,
+      "reduced_residual": 1.8131684520028557e-05,
+      "direct_residual": 1.9253563051241682e-05,
+      "cancellation_absolute_error": 1.1218785312131249e-06
+    },
+    "train_calls": [
+      {
+        "epochs": 2000,
+        "optimizer": "rprop",
+        "seconds": 6.308801100123674,
+        "E": null,
+        "phase": "main",
+        "restore_every": 1000,
+        "restore_step": 1e-05
+      }
+    ],
+    "figure_sha256": {
+      "schrodinger_circle_vanilla.png": "eb91b2d9f7b9614f5c05f12db8e4bc66488c36c557150dd5c72dc648bd8cc5a7",
+      "schrodinger_circle_vanilla.pdf": "b7fa23a2d8d2dff304a241fd106d190d9f2de4b7c64e019c53e40088053e6656"
+    },
+    "dense_residual_evaluation": {
+      "grid_points": 22589,
+      "max_value_difference_from_saved_field": 0.0,
+      "training_updates": 0,
+      "source_checkpoint_sha256": "f819b4d37ef80342e8e86baad18a8781340034bbec0efb7599c1fcd4a8155ecd",
+      "source_run": "rtx3090-circle-projection-2000"
+    }
+  },
+  "schrodinger_circle": {
+    "source_run": "output/examples/rtx3090-circle-dense-20261103",
+    "source_name": "schrodinger_circle_projection",
+    "source_sha256": {
+      "schrodinger_circle_projection.json": "85d06f68f5b708a91d9c47b2fbb07a9c3fe9125a942ff7b01b66fac03b8287c9",
+      "schrodinger_circle_projection.npz": "7661a26f30f8a0ca69a4088ab4c11b5df137bb23488e52a99c9719b78c806e1b"
+    },
+    "backend": "CUDA server",
+    "status": "completed",
+    "updates": 2000,
+    "metrics": {
+      "E": 5.78132028252645,
+      "normalization_integral": 0.9999980084843396,
+      "normalization_error": -1.991515660382248e-06,
+      "training_pde_rms": 0.00035004818129248113,
+      "heldout_pde_rms": 0.00031994199827514627,
+      "heldout_normalization_integral": 1.0048166038472934,
+      "boundary_value_rms": 0.00023383666105858696,
+      "boundary_tangent_rms": 0.0005106826523228762,
+      "training_residual_derivative_rms": [
+        0.005061892418290265,
+        0.005686957730610682
+      ],
+      "heldout_residual_derivative_rms": [
+        0.005481881862938307,
+        0.006190865523130277
+      ],
+      "boundary_second_tangent_rms": 0.004842659848545626,
+      "heldout_boundary_value_rms": 0.00023383507959864368,
+      "heldout_boundary_tangent_rms": 0.0005106998044578097,
+      "heldout_boundary_second_tangent_rms": 0.004842605441998338,
+      "heldout_boundary_pde_rms": 0.0006456758574399501,
+      "boundary_residual_training_rms": 0.0006455250614743909,
+      "bulk_points": 305,
+      "boundary_points": 64,
+      "dense_grid_normalization": 1.0003114011041028,
+      "exact_energy": 5.783185962946783,
+      "energy_relative_error": 0.00032260425867103315,
+      "dense_value_relative_l2": 0.0003084860757025939,
+      "dense_value_max_abs_error": 0.00037292024094763066,
+      "dense_shape_relative_l2": 0.0002662999008846194,
+      "exact_training_quadrature_mass": 0.9996897253068212,
+      "sign_alignment": -1,
+      "projection_A": 129.5816032762286,
+      "projection_B": 22.413827151626492,
+      "projection_C": 3.8769391862565343,
+      "reduced_residual": 8.975548831813285e-05,
+      "direct_residual": 9.128816255897665e-05,
+      "cancellation_absolute_error": 1.5326742408438052e-06
+    },
+    "train_calls": [
+      {
+        "epochs": 2000,
+        "optimizer": "rprop",
+        "seconds": 9.365244599990547,
+        "E": null,
+        "phase": "main",
+        "restore_every": 1000,
+        "restore_step": 1e-05
+      }
+    ],
+    "figure_sha256": {
+      "schrodinger_circle.png": "0ae3a87ef35adf642621fb97e2b3108602a292d9191a09b272031e861c237b65",
+      "schrodinger_circle.pdf": "90ed2389a1e7500a0b54acaa4b09d890b6f02d55b1bf1ee1eadaf84ad8f243ae"
+    },
+    "dense_residual_evaluation": {
+      "grid_points": 22589,
+      "max_value_difference_from_saved_field": 0.0,
+      "training_updates": 0,
+      "source_checkpoint_sha256": "1b68875af34ec91850e2b79f827c2f7d3c837c49e5b89111686ff2999655c769",
+      "source_run": "rtx3090-circle-projection-2000"
+    }
+  },
+  "attached_variation": {
+    "source_run": "output/examples/rtx3090-delivery-gpu-rerun-20261102",
+    "source_name": "attached_variation",
+    "source_sha256": {
+      "attached_variation.json": "1149b80e28bf0dc94b28f84d035946beaf57ebcb1cc94faa7ecb7314634c953e",
+      "attached_variation.npz": "bfef78b890511e0198d72506ecf2b2f5cfbf4ec04981a83ca88e2af62b8b539c"
+    },
+    "backend": "CUDA server",
+    "status": "completed",
+    "updates": 0,
+    "metrics": {
+      "energy": 5.553603708024292,
+      "exact_energy": 5.553603672697958,
+      "fixed_gradient": [
+        -2.2214415073394775,
+        -2.2214417457580566,
+        0.0
+      ],
+      "attached_gradient": [
+        1.6660809516906738,
+        0.2776799201965332,
+        8.885765075683594
+      ],
+      "exact_shape_gradient": [
+        1.6660811018093873,
+        0.2776801836348979,
+        8.885765876316732
+      ]
+    },
+    "train_calls": [],
+    "figure_sha256": {}
+  }
+}

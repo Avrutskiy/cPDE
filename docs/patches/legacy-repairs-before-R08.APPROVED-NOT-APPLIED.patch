@@ -1,0 +1,508 @@
+--- a/cuda/cpde_engine.cuh
++++ b/cuda/cpde_engine.cuh
+@@ -5,6 +5,9 @@
+ #include <stdio.h>
+ #include <math.h>
+ #include <iostream>
++#include <memory>
++#include <stdexcept>
++#include <climits>
+ #include <string>
+ #include <vector>
+ #include <random>
+@@ -286,7 +289,8 @@
+ 	FILE* output;
+ 	int k = 0;
+ 	while (file_name[k] != '\0')k++;
+-	if (k < 5) {
++	if (k < 4) {
++        return;
+ 		std::cout << "\tfile name: " << file_name << " too weak >_< \n";
+ 	}
+ 	char a, b, c, d;
+@@ -351,44 +355,44 @@
+ 
+ 	if (transpose == 'n') {
+ 
+-		if (A->w != B->h) { fprintf(stderr, "Not compatible matrix dimensions ( %d x %d )  ( %d x %d )\n", A->h, A->w, B->h, B->w); return -1; }
++		if (A->w != B->h) { fprintf(stderr, "Not compatible matrix dimensions ( %d x %d )  ( %d x %d )\n", A->h, A->w, B->h, B->w); throw std::runtime_error("matrix_product failed; see diagnostic"); }
+ 		if (C->mem->loc != 'd' || A->mem->loc != 'd' || B->mem->loc != 'd') { fprintf(stderr, " Matrices C, A, B are stored in_ %c %c %c \n", C->mem->loc, A->mem->loc, B->mem->loc); }
+ 		if (b == 0.0f) { C->h = A->h;  C->w = B->w; }
+ 		ret = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, A->h, B->w, B->h, &alpha, A->mem->vals, A->h, B->mem->vals, B->h, &beta, C->mem->vals, C->h);
+ 		if (ret != CUBLAS_STATUS_SUCCESS) {
+ 			fprintf(stderr, " Something is wrong with CUBLAS sgemm, transpose='n' %s\n", gpu_status_name(ret));
+-			return -1;
++			throw std::runtime_error("matrix_product failed; see diagnostic");
+ 		}
+ 		return 0;
+ 	}
+ 
+ 	if (transpose == 'a') {
+ 
+-		if (A->h != B->h) { fprintf(stderr, "Not compatible matrix dimensions ( %d x %d )T  ( %d x %d )\n", A->h, A->w, B->h, B->w); return -1; }
++		if (A->h != B->h) { fprintf(stderr, "Not compatible matrix dimensions ( %d x %d )T  ( %d x %d )\n", A->h, A->w, B->h, B->w); throw std::runtime_error("matrix_product failed; see diagnostic"); }
+ 		if (C->mem->loc != 'd' || A->mem->loc != 'd' || B->mem->loc != 'd') { fprintf(stderr, " Matrices C,A,B are stored in_ %c %c %c \n", C->mem->loc, A->mem->loc, B->mem->loc); }
+ 		if (b == 0.0f) { C->h = A->w;  C->w = B->w; }
+ 		ret = cublasSgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, A->w, B->w, B->h, &alpha, A->mem->vals, A->h, B->mem->vals, B->h, &beta, C->mem->vals, C->h);
+ 		if (ret != CUBLAS_STATUS_SUCCESS) {
+ 			fprintf(stderr, " Something is wrong with CUBLAS sgemm, transpose='a' %s\n", gpu_status_name(ret));
+-			return -1;
++			throw std::runtime_error("matrix_product failed; see diagnostic");
+ 		}
+ 		return 0;
+ 	}
+ 
+ 	if (transpose == 'b') {
+ 
+-		if (A->w != B->w) { fprintf(stderr, "Not compatible matrix dimensions ( %d x %d )  ( %d x %d )T\n", A->h, A->w, B->h, B->w); return -1; }
++		if (A->w != B->w) { fprintf(stderr, "Not compatible matrix dimensions ( %d x %d )  ( %d x %d )T\n", A->h, A->w, B->h, B->w); throw std::runtime_error("matrix_product failed; see diagnostic"); }
+ 		if (C->mem->loc != 'd' || A->mem->loc != 'd' || B->mem->loc != 'd') { fprintf(stderr, " Matrices C, A, B are stored in_ %c %c %c \n", C->mem->loc, A->mem->loc, B->mem->loc); }
+ 		if (b == 0.0f) { C->h = A->h;  C->w = B->h; }
+ 		ret = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, A->h, B->h, B->w, &alpha, A->mem->vals, A->h, B->mem->vals, B->h, &beta, C->mem->vals, C->h);
+ 		if (ret != CUBLAS_STATUS_SUCCESS) {
+ 			fprintf(stderr, " Something is wrong with CUBLAS sgemm, transpose='b' %s\n", gpu_status_name(ret));
+-			return -1;
++			throw std::runtime_error("matrix_product failed; see diagnostic");
+ 		}
+ 		return 0;
+ 	}
+ 
+-	return -1;
++	throw std::runtime_error("matrix_product failed; see diagnostic");
+ 
+ }
+ 
+@@ -399,38 +403,38 @@
+ 
+ 	if (transpose == 'n') {
+ 
+-		if (wA != hB) { fprintf(stderr, "\tnon-compatible matrix dimensions [ %d x %d ]  [ %d x %d ]\n", hA, wA, hB, wB); return -1; }
++		if (wA != hB) { fprintf(stderr, "\tnon-compatible matrix dimensions [ %d x %d ]  [ %d x %d ]\n", hA, wA, hB, wB); throw std::runtime_error("matrix_product failed; see diagnostic"); }
+ 		ret = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, hA, wB, hB, &alpha, A, hA, B, hB, &beta, C, hC);
+ 		if (ret != CUBLAS_STATUS_SUCCESS) {
+ 			fprintf(stderr, "\tsgemm error, transpose='n' %s\n", gpu_status_name(ret));
+-			return -1;
++			throw std::runtime_error("matrix_product failed; see diagnostic");
+ 		}
+ 		return 0;
+ 	}
+ 
+ 	if (transpose == 'a') {
+ 
+-		if (hA != hB) { fprintf(stderr, "\tnon-compatible matrix dimensions [ %d x %d ]T  [ %d x %d ]\n", hA, wA, hB, wB); return -1; }
++		if (hA != hB) { fprintf(stderr, "\tnon-compatible matrix dimensions [ %d x %d ]T  [ %d x %d ]\n", hA, wA, hB, wB); throw std::runtime_error("matrix_product failed; see diagnostic"); }
+ 		ret = cublasSgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N, wA, wB, hB, &alpha, A, hA, B, hB, &beta, C, hC);
+ 		if (ret != CUBLAS_STATUS_SUCCESS) {
+ 			fprintf(stderr, "\tsgemm error, transpose='a' %s\n", gpu_status_name(ret));
+-			return -1;
++			throw std::runtime_error("matrix_product failed; see diagnostic");
+ 		}
+ 		return 0;
+ 	}
+ 
+ 	if (transpose == 'b') {
+ 
+-		if (wA != wB) { fprintf(stderr, "non-compatible matrix dimensions [ %d x %d ]  [ %d x %d ]T\n", hA, wA, hB, wB); return -1; }
++		if (wA != wB) { fprintf(stderr, "non-compatible matrix dimensions [ %d x %d ]  [ %d x %d ]T\n", hA, wA, hB, wB); throw std::runtime_error("matrix_product failed; see diagnostic"); }
+ 		ret = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_T, hA, hB, wB, &alpha, A, hA, B, hB, &beta, C, hC);
+ 		if (ret != CUBLAS_STATUS_SUCCESS) {
+ 			fprintf(stderr, "\tsgemm error, transpose='b' %s\n", gpu_status_name(ret));
+-			return -1;
++			throw std::runtime_error("matrix_product failed; see diagnostic");
+ 		}
+ 		return 0;
+ 	}
+ 
+-	return -1;
++	throw std::runtime_error("matrix_product failed; see diagnostic");
+ 
+ }
+ 
+@@ -499,35 +503,19 @@
+ 			dev = NULL;
+ 		}
+ 	}
+-	itable(char* file_name) {
+-		int H;
+-		int W;
+-		FILE* input = fopen(file_name, "r");
+-		if (input == NULL) { std::cout << "\titable load failed \n";}
+-		std::cout << "\tloading itable from " << file_name << "\n";
+-
+-		fscanf(input, "%d", &H);
+-		fscanf(input, "%d", &W);
+-		h = H;
+-		w = W;
+-		if (h*w > 0) {
+-			checkCudaErrors(cudaHostAlloc((void**)&host, h*w * sizeof(int), cudaHostAllocDefault));
+-			checkCudaErrors(cudaMalloc((void**)&dev, h*w * sizeof(int)));
+-
+-			for (int q = 0; q < h; q++) {
+-				for (int p = 0; p < w; p++) {
+-					fscanf(input, "%d", (host) + p * h + q);
+-				}
+-			}
+-			todev();
+-			
+-		}
+-		else {
+-			host = NULL;
+-			dev = NULL;
+-		}
+-		fclose(input);
+-	}
++	itable(char* file_name) : h(0), w(0), host(nullptr), dev(nullptr) {
++        std::unique_ptr<FILE, decltype(&fclose)> input(fopen(file_name,"r"), &fclose);
++        int H=0,W=0;
++        if(!input || fscanf(input.get(),"%d%d",&H,&W)!=2 || H<=0 || W<=0 || int64_t(H)*W>INT_MAX)
++            throw std::runtime_error("invalid itable file/header");
++        std::vector<int> values(size_t(H)*W);
++        for(int q=0;q<H;++q)for(int p=0;p<W;++p)
++            if(fscanf(input.get(),"%d",&values[p*H+q])!=1)throw std::runtime_error("truncated itable");
++        h=H;w=W;
++        checkCudaErrors(cudaHostAlloc((void**)&host,values.size()*sizeof(int),cudaHostAllocDefault));
++        checkCudaErrors(cudaMalloc((void**)&dev,values.size()*sizeof(int)));
++        std::copy(values.begin(),values.end(),host);todev();
++    }
+ 
+ 	itable() {
+ 		h = 0;
+@@ -557,7 +545,8 @@
+ 	FILE* output;
+ 	int k = 0;
+ 	while (file_name[k] != '\0')k++;
+-	if (k < 5) {
++	if (k < 4) {
++        return;
+ 		std::cout << "file name: " << file_name << " too weak >_< \n";
+ 	}
+ 	char a, b, c, d;
+@@ -790,7 +779,8 @@
+ 	FILE* output;
+ 	int k = 0;
+ 	while (file_name[k] != '\0')k++;
+-	if (k < 5) {
++	if (k < 4) {
++        return;
+ 		std::cout << "file name: " << file_name << " too weak >_< \n";
+ 	}
+ 	char a, b, c, d;
+@@ -908,7 +898,8 @@
+ 	FILE* output;
+ 	int k = 0;
+ 	while (file_name[k] != '\0')k++;
+-	if (k < 5) {
++	if (k < 4) {
++        return;
+ 		std::cout << "file name: " << file_name << " too weak >_< \n";
+ 	}
+ 	char a, b, c, d;
+@@ -1301,16 +1292,16 @@
+ 	}
+ 
+ 	void print(char* filename) {
+-		char* saving_name;
++		std::vector<char> storage;
+ 		int le = 0;
+ 
+ 		while (filename[le] != '\0')le++;
+-		saving_name = (char*)malloc((le + 32) * sizeof(char));
++		storage.resize(le+32);
++        char* saving_name=storage.data();
+ 
+ 		int ay = 0;
+-		char* id;
+-		id = (char*)malloc(32 * sizeof(char));
+-		matrix* copycache = new matrix(env->h, env->w, 'h');
++
++		std::unique_ptr<matrix> copycache(new matrix(env->h, env->w, 'h'));
+ 
+ 		while (ay < env->S->h) {
+ 			sprintf(saving_name, "d%d", ay);
+@@ -1332,16 +1323,16 @@
+     }
+ 
+ 	void printd(char* filename) {
+-		char* saving_name;
++		std::vector<char> storage;
+ 		int le = 0;
+ 
+ 		while (filename[le] != '\0')le++;
+-		saving_name = (char*)malloc((le + 32) * sizeof(char));
++		storage.resize(le+32);
++        char* saving_name=storage.data();
+ 
+ 		int ay = 0;
+-		char* id;
+-		id = (char*)malloc(32 * sizeof(char));
+-		matrix* copycache = new matrix(env->h, env->w, 'h');
++
++		std::unique_ptr<matrix> copycache(new matrix(env->h, env->w, 'h'));
+ 
+ 	//	while (ay < env->S->h) {
+ 			sprintf(saving_name, "d%d", ay);
+@@ -1369,28 +1360,20 @@
+ 	int devID;
+ 	int maxlen; // maximum number of patterns
+ 
+-	conf(char* file_name) {
+-
+-		FILE* input = fopen(file_name, "r");
+-		if (input == NULL) { 
+-			std::cout << "\tloading conf failed\n";
+-			neurons = NULL;			
+-			lin = NULL;
+-			devID = -1;
+-			maxlen = 0;
+-		}
+-		else {
+-			std::cout << "\tconfig load from " << file_name << "\n";
+-			fscanf(input, "%d", &layers);
+-
+-			neurons = (int*)malloc(layers * sizeof(int));
+-			lin = (int*)malloc(layers * sizeof(int));
+-			for (int t = 0; t < layers; t++) fscanf(input, "%d", &neurons[t]);
+-			for (int t = 0; t < layers; t++) fscanf(input, "%d", &lin[t]);
+-			fscanf(input, "%d", &maxlen);
+-			fscanf(input, "%d", &devID);
+-		}
+-	}
++	conf(char* file_name) : conf() {
++        std::unique_ptr<FILE, decltype(&fclose)> input(fopen(file_name,"r"), &fclose);
++        int count=0,max_patterns=0,device=0;
++        if(!input || fscanf(input.get(),"%d",&count)!=1 || count<2 || count>256)
++            throw std::runtime_error("invalid conf file/header");
++        std::vector<int> ns(count),ls(count);
++        for(int& n:ns)if(fscanf(input.get(),"%d",&n)!=1 || n<=0)throw std::runtime_error("invalid layer width");
++        for(int& l:ls)if(fscanf(input.get(),"%d",&l)!=1 || (l!=0&&l!=1))throw std::runtime_error("invalid linear flag");
++        if(fscanf(input.get(),"%d%d",&max_patterns,&device)!=2 || max_patterns<=0 || device<0)
++            throw std::runtime_error("invalid conf capacity/device");
++        layers=count;maxlen=max_patterns;devID=device;
++        neurons=(int*)malloc(count*sizeof(int));lin=(int*)malloc(count*sizeof(int));
++        std::copy(ns.begin(),ns.end(),neurons);std::copy(ls.begin(),ls.end(),lin);
++    }
+ 
+ 	void print() {
+ 		if (maxlen > 0) {
+@@ -1430,25 +1413,20 @@
+ 	ptable* ADDR;
+ 
+ void print(char* name = NULL) {
+-        char buffer[500];
+-        char buffer2[500];
++        
++        std::string filename;
+         matrix* cache = new matrix(h, w, 'h');
+         for (int i = 0; i < S->h; i++) {
+             checkCudaErrors(cudaMemcpy(cache->mem->vals, ADDR->host[i], h * w * sizeof(float), cudaMemcpyDeviceToHost));
+-            if(name!=NULL) {
+-                sprintf(buffer, name);
+-                sprintf(buffer2, "io-%d-", i);
+-                strcat(buffer2, buffer);
+-            }
+-            else sprintf(buffer2, "io-%d.mat", i);
+-
+-            cache->print(buffer2);
++            filename = "io-" + std::to_string(i) + (name ? std::string("-")+name : ".mat");
++            cache->print(filename.data());
+         }
+         delete cache;
+     }
+ 
+ 	inout(char* file_name, int DEV_ID = 0) {
+ 		devID = DEV_ID;
++        h=w=0;mem=nullptr;S=nullptr;ADDR=nullptr;
+ 		int devID_current;
+ 		checkCudaErrors(cudaGetDevice(&devID_current));
+ 		if (devID_current != devID) {
+@@ -1459,7 +1437,8 @@
+ 		FILE* input = fopen(file_name, "rb");
+ 		char c; int ht; int wt;
+ 		if (input == NULL) {
+-			std::cout << "\tloading inout failed, no destination \n";
++			if(devID_current!=devID)checkCudaErrors(cudaSetDevice(devID_current));
++            throw std::runtime_error("cannot open inout file");
+ 		}
+ 		else {
+ 			std::cout << "\tloading inout from " << file_name << "\n" << "\t";
+@@ -1533,18 +1512,13 @@
+ 	}
+ 
+ 	void print(char* name = NULL) {
+-        char buffer[500];
+-        char buffer2[500];
++        
++        std::string filename;
+         matrix* cache = new matrix(h, w, 'h');
+         for (int i = 0; i < l; i++) {
+             checkCudaErrors(cudaMemcpy(cache->mem->vals, ADDR(i), h * w * sizeof(float), cudaMemcpyHostToHost));
+-            if(name!=NULL) {
+-                sprintf(buffer, name);
+-                sprintf(buffer2, "io-%d-", i);
+-                strcat(buffer2, buffer);
+-            }
+-            else sprintf(buffer2, "io-%d.mat", i);
+-            cache->print(buffer2);
++            filename = "io-" + std::to_string(i) + (name ? std::string("-")+name : ".mat");
++            cache->print(filename.data());
+         }
+         delete cache;
+     }
+@@ -1714,7 +1688,11 @@
+ 		fread(&w, sizeof(int), 1, input);
+ 		fread(&c, sizeof(char), 1, input); std::cout << " " << c;
+ 
+-		int wr = (int)(w/chunks);
++		if(chunks<=0 || w<=0 || w%chunks!=0) {
++            delete S;fclose(input);
++            throw std::invalid_argument("sample count must be positive and divisible by chunks");
++        }
++        int wr = w/chunks;
+ 		if(wr * chunks != w) std::cout << "\t " << w << " NOT DIVISIBLE BY " << chunks <<  "\n";
+ 		std::cout << "\th = " << h << " w0 = " << w << " splitted into w = " << wr << " chunks, total of " << chunks << " " << "\n" << "\t";
+ 		
+@@ -1769,7 +1747,11 @@
+ 		fread(&w, sizeof(int), 1, input);
+ 		fread(&c, sizeof(char), 1, input); std::cout << " " << c;
+ 
+-		int wr = (int)(w/chunks);
++		if(chunks<=0 || w<=0 || w%chunks!=0) {
++            delete S;fclose(input);
++            throw std::invalid_argument("sample count must be positive and divisible by chunks");
++        }
++        int wr = w/chunks;
+ 		if(wr * chunks != w) std::cout << "\t " << w << " NOT DIVISIBLE BY " << chunks <<  "\n";
+ 		std::cout << "\th = " << h << " w0 = " << w << " splitted into w = " << wr << " chunks, total of " << chunks << " " << "\n" << "\t";
+ 		
+@@ -1895,9 +1877,16 @@
+ 			//	add_noise <<< 64, 64, 0, *str->exec >>> (input->h, input->w, ctx->ADDR->host[0], input->ADDR->host[0]);
+ 			//	seed++;
+ 			}
+-			else TSize = input->mem->transfer(layers->mem, strm, input->h * input->w * input->S->h);
++			else {
++                TSize = input->mem->transfer(layers->mem, strm, input->h * input->w * input->S->h);
++                // Order the consumer stream after the actual asynchronous copy.
++                cudaEvent_t copied;checkCudaErrors(cudaEventCreate(&copied));
++                checkCudaErrors(cudaEventRecord(copied,*strm->exec));
++                checkCudaErrors(cudaStreamWaitEvent(*str->exec,copied,0));
++                checkCudaErrors(cudaEventDestroy(copied));
++            }
+ 			prop_context();
+-			str->fin(); // this is sketchy if the stream used is not str
++			str->fin();
+ 		}
+ 		else {
+ 			fprintf(stderr, "\tinput mismatch or missing context\n");
+@@ -1907,34 +1896,23 @@
+ 	}
+ 
+ 	int load_W(const char* file_name, char content = 'w') {
+-		char* real_name; int le = 0;
+-		while (file_name[le] != '\0') le++;
+-		real_name = (char*)malloc((le + 32) * sizeof(char));
+-		char* buffer = (char*)malloc((le + 32) * sizeof(char));
+-		strcpy(real_name, file_name);
+-		if(content!='w') {
+-			sprintf(buffer, "_%c", content);
+-			strcat(real_name, buffer);
+-		}
+-		strcat(real_name, ".dat");
+-
+-		FILE* input = fopen(real_name, "rb");
+-		if (input == NULL) { std::cout << "\tloading weights from " << real_name << " failed.\n"; return -1; }
+-		std::cout << "\tloading weights from " << real_name << "\n";
++        if(content!='w'&&content!='a'&&content!='i'&&content!='d')throw std::invalid_argument("invalid buffer kind");
++        const std::string real_name=std::string(file_name)+(content=='w'?"":std::string("_")+content)+".dat";
++        std::unique_ptr<FILE, decltype(&fclose)> owner(fopen(real_name.c_str(),"rb"),&fclose);
++        FILE* input=owner.get();if(!input)return -1;
+ 
+ 		int load = 1;
+ 
+ 		char w_s;
+ 		int ay = 0;
+-		int c[256];
+-		int l[256];
+-
+-		fread(c, sizeof(int), 1, input);
+-		fread(c + 1, sizeof(int), c[0], input);
+-		std::cout << "\t";
+-		fread(&w_s, sizeof(char), 1, input); std::cout << " " << w_s;
+-		fread(l, sizeof(int), c[0] + 1, input);
+-		fread(&w_s, sizeof(char), 1, input); std::cout << " " << w_s;
++        int count=0,actual=1;
++        for(layer* f=layers;f->next;f=f->next)++actual;
++        if(fread(&count,sizeof(int),1,input)!=1 || count!=actual || count<2 || count>256)return -1;
++        std::vector<int> c(count+1),l(count+1);c[0]=count;
++        if(fread(c.data()+1,sizeof(int),count,input)!=size_t(count) ||
++           fread(&w_s,1,1,input)!=1 ||
++           fread(l.data(),sizeof(int),count+1,input)!=size_t(count+1) ||
++           fread(&w_s,1,1,input)!=1 || l[0]!=count)return -1;
+ 		layer* f = layers;
+ 		while (f->prev != NULL) f = f->prev;
+ 
+@@ -1951,7 +1929,7 @@
+ 			}
+ 		}
+ 
+-		if (load == 0) return 0;
++		if (load == 0) return -1;
+ 
+ 		f = layers; while (f->prev != NULL) f = f->prev;
+ 
+@@ -1965,9 +1943,7 @@
+ 		}
+ 		std::cout << "\n";
+ 
+-		fclose(input);
+-		free(buffer);
+-		free(real_name);
++
+ 
+ 		return 0;
+ 	}
+@@ -2136,11 +2112,12 @@
+ 	}
+ 
+ 	void print(char* filename) {
+-		char* saving_name;
++		std::vector<char> storage;
+ 		int le = 0;
+ 
+ 		while (filename[le] != '\0')le++;
+-		saving_name = (char*)malloc((le + 32) * sizeof(char));
++		storage.resize(le+32);
++        char* saving_name=storage.data();
+ 
+ 		layer* current = layers;
+ 		int t = 0;
+@@ -2174,6 +2151,7 @@
+ 	}
+ 
+ 	void save(char* file_name, char content = 'w') {
++		if(content!='w'&&content!='a'&&content!='i'&&content!='d')throw std::invalid_argument("invalid buffer kind");
+ 		FILE* output = fopen(file_name, "wb"); int Cnum;
+ 		if (output == NULL) { fprintf(stderr, "\tfopen error, cannot save network\n"); }
+ 		else {
+@@ -2187,16 +2165,12 @@
+ 			if (content == 'i') { std::cout << "\tsaving net inactive grad to: " << file_name << "\n"; Cnum = f->W_plus->inact_grad(); }
+ 			if (content == 'd') { std::cout << "\tsaving deltas to: " << file_name << "\n"; Cnum = 3; }
+ 
+-			int c[256];
+-			int l[256];
+-			l[0] = 1; l[1] = f->lin;
+-			c[0] = 1; c[1] = f->n;
+-			int k = 2;
+-			while (f->next != NULL) { f = f->next; c[0]++; l[0]++; l[k] = f->lin; c[k] = f->n; k++; }
+-
+-			fwrite(c, sizeof(int), k, output);
+-			fwrite(&whitespace, sizeof(char), 1, output);
+-			fwrite(l, sizeof(int), k, output);
++            std::vector<int> c{0},l{0};
++            for(layer* current=f;current;current=current->next){c.push_back(current->n);l.push_back(current->lin);}
++            c[0]=l[0]=int(c.size())-1;
++            fwrite(c.data(),sizeof(int),c.size(),output);
++            fwrite(&whitespace,sizeof(char),1,output);
++            fwrite(l.data(),sizeof(int),l.size(),output);
+ 
+ 			f = layers;
+ 			while (f->prev != NULL) f = f->prev;

@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cpde-interface"
+version = "0.2.0"
+description = "Python descriptions for a persistent externally supplied CPU or CUDA executable"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.9"
+dependencies = ["numpy"]
+keywords = ["cuda", "pde", "neural-network", "scientific-computing"]
+
+[project.optional-dependencies]
+dev = ["build", "wheel"]
+geometry = ["scipy"]
+plots = ["matplotlib"]
+
+[tool.setuptools]
+packages = ["cpde"]

@@ -1,0 +1,37 @@
+name: Host probe and packaging
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  host-tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Python 3.9 has no setup-python build for Ubuntu 26.04.
+          - os: ubuntu-24.04
+            python-version: '3.9'
+          - os: ubuntu-26.04
+            python-version: '3.13'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Python package and build tools
+        run: python -m pip install '.[dev,geometry]'
+      - name: Run serial host-probe tests (not GPU validation)
+        run: python -B -m unittest discover -s tests -v
+      - name: Execute each standalone example for one test epoch
+        run: |
+          python tests/build_host_probe.py build/host
+          python tests/run_examples.py build/host/cpde_host_probe
+      - name: Build Python distributions and portable source bundle
+        run: |
+          python -m build
+          python scripts/bundle.py
+          python scripts/bundle_samples.py

@@ -1,0 +1,57 @@
+name: CPU backends
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  cpu-tests:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            blas: SYSTEM
+          - os: ubuntu-latest
+            blas: SYSTEM
+          - os: ubuntu-latest
+            blas: NONE
+          - os: windows-latest
+            blas: NONE
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Python dependencies
+        run: python -m pip install '.[geometry]'
+      - name: Install Linux CBLAS
+        if: runner.os == 'Linux' && matrix.blas == 'SYSTEM'
+        run: sudo apt-get update && sudo apt-get install -y libopenblas-dev
+      - name: Build macOS CPU backend
+        if: runner.os == 'macOS'
+        run: sh scripts/build-macos.sh -DCPDE_CPU_BLAS=${{ matrix.blas }} -DCPDE_BUILD_ENGINE_TESTS=ON -DCPDE_BUILD_REDUCTION_TESTS=ON
+      - name: Build Linux CPU backend
+        if: runner.os == 'Linux'
+        run: sh scripts/build-linux.sh cpu -DCPDE_CPU_BLAS=${{ matrix.blas }} -DCPDE_BUILD_ENGINE_TESTS=ON -DCPDE_BUILD_REDUCTION_TESTS=ON
+      - name: Build Windows CPU backend
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./scripts/build-windows.ps1 -Backend cpu -CMakeArgs @('-DCPDE_CPU_BLAS=NONE','-DCPDE_BUILD_ENGINE_TESTS=ON','-DCPDE_BUILD_REDUCTION_TESTS=ON')
+      - name: Native CPU probes
+        run: ctest --test-dir build-cpu -C Release --output-on-failure
+      - name: Python suite against production CPU backend
+        shell: python
+        run: |
+          import os, pathlib, subprocess, sys
+          build = pathlib.Path('build-cpu').resolve()
+          suffix = ''
+          if sys.platform == 'win32':
+              build /= 'Release'
+              suffix = '.exe'
+          env = dict(os.environ)
+          env['CPDE_TEST_EXECUTABLE'] = str(build / ('cpde_cpu_server' + suffix))
+          env['CPDE_TEST_CPU_EXECUTABLE'] = env['CPDE_TEST_EXECUTABLE']
+          env['CPDE_TEST_REDUCTION_EXECUTABLE'] = str(build / ('cpde_cpu_reduction_probe' + suffix))
+          subprocess.run([sys.executable, '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-v'], env=env, check=True)

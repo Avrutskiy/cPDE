@@ -1,0 +1,20 @@
+include LICENSE README.md API_REFERENCE.md CMakeLists.txt IMPLEMENTATION_NOTES.md IMPLEMENTATION_PLAN.md CONTRIBUTING.md CHANGELOG.md CODE_REVIEW.md
+include KNOWN_ISSUES.md VALIDATION.md RELEASE_NOTES.md RELEASE_UPLOAD.md BUILDING.md CODE_PROVENANCE.md
+recursive-include docs *.md *.patch
+recursive-include docs/benchmarks *.csv *.json
+recursive-include cuda *.cu *.cuh *.hpp
+recursive-include cpu *.cpp *.h *.cuh
+include examples/README.md
+include examples/__init__.py
+include examples/attached_variation.py
+include examples/fit_function.py
+include examples/fit_function_explicit.py
+include examples/fit_function_vanilla.py
+include examples/poisson_disk.py
+include examples/poisson_disk_vanilla.py
+include examples/schrodinger_circle.py
+include examples/schrodinger_circle_vanilla.py
+recursive-include examples/results *.png *.pdf *.json
+recursive-include tests *.py *.cu *.cuh *.h
+recursive-include scripts *.py *.sh *.ps1
+global-exclude __pycache__ *.py[cod]

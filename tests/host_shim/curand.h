@@ -1,0 +1,9 @@
+#pragma once
+using curandGenerator_t=void*;
+enum curandStatus_t {CURAND_STATUS_SUCCESS,CURAND_STATUS_VERSION_MISMATCH,CURAND_STATUS_NOT_INITIALIZED,CURAND_STATUS_ALLOCATION_FAILED,CURAND_STATUS_TYPE_ERROR,CURAND_STATUS_OUT_OF_RANGE,CURAND_STATUS_LENGTH_NOT_MULTIPLE,CURAND_STATUS_DOUBLE_PRECISION_REQUIRED,CURAND_STATUS_LAUNCH_FAILURE,CURAND_STATUS_PREEXISTING_FAILURE,CURAND_STATUS_INITIALIZATION_FAILED,CURAND_STATUS_ARCH_MISMATCH,CURAND_STATUS_INTERNAL_ERROR};
+enum{CURAND_RNG_PSEUDO_XORWOW,CURAND_ORDERING_PSEUDO_BEST};
+inline curandStatus_t curandCreateGenerator(curandGenerator_t* g,int){*g=nullptr;return CURAND_STATUS_SUCCESS;}
+inline curandStatus_t curandSetStream(curandGenerator_t,int){return CURAND_STATUS_SUCCESS;}
+inline curandStatus_t curandSetGeneratorOffset(curandGenerator_t,unsigned long long){return CURAND_STATUS_SUCCESS;}
+inline curandStatus_t curandSetGeneratorOrdering(curandGenerator_t,int){return CURAND_STATUS_SUCCESS;}
+inline curandStatus_t curandDestroyGenerator(curandGenerator_t){return CURAND_STATUS_SUCCESS;}
