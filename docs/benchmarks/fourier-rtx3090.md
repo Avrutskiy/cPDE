@@ -16,15 +16,17 @@ Clean production server compilation/linking: **19.3 s**;
 including CMake configuration: **26.5 s**.
 The compiler used CUDA 13.0.88, MSVC 19.44 and the sm_86 Release target.
 
-| Order | PyTorch, no JIT (ms/epoch) | PyTorch + JIT (ms/epoch) | cPDE CUDA (ms/epoch) | JIT compilation time (s) |
-|---:|---:|---:|---:|---:|
-| 0 | 1.45 | 0.84 | 0.41 | 8.8 |
-| 1 | 2.73 | 1.50 | 0.68 | 11.8 |
-| 2 | 8.06 | 3.09 | 1.10 | 18.5 |
-| 3 | 26.71 | 7.51 | 1.72 | 44.3 |
-| 4 | 90.09 | 25.74 | 2.40 | 175.9 |
-| 5 | 317.55 | 47.49 | 3.59 | 509.9 |
-| 6 | 1,092.37 | 161.08 | 5.65 | 2,649.7 |
+“Extra derivatives” counts all distinct partial derivatives through the selected order, excluding the function value.
+
+| Order | Extra derivatives | PyTorch, no JIT (ms/epoch) | PyTorch + JIT (ms/epoch) | cPDE CUDA (ms/epoch) | JIT compilation time (s) |
+|---:|---:|---:|---:|---:|---:|
+| 0 | 0 | 1.45 | 0.84 | 0.41 | 8.8 |
+| 1 | 2 | 2.73 | 1.50 | 0.68 | 11.8 |
+| 2 | 5 | 8.06 | 3.09 | 1.10 | 18.5 |
+| 3 | 9 | 26.71 | 7.51 | 1.72 | 44.3 |
+| 4 | 14 | 90.09 | 25.74 | 2.40 | 175.9 |
+| 5 | 20 | 317.55 | 47.49 | 3.59 | 509.9 |
+| 6 | 27 | 1,092.37 | 161.08 | 5.65 | 2,649.7 |
 
 [CSV table](fourier-rtx3090.csv) · [Raw batch times, errors and source hashes](fourier-rtx3090.json) ·
 [Portable benchmark script](../../scripts/benchmark_fourier_performance.py) ·
