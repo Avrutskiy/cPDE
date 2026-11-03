@@ -31,7 +31,7 @@ backend, examples, tests and documentation was implemented or revised with
 OpenAI Codex; the retained engine also received targeted edits. See
 [code provenance](CODE_PROVENANCE.md) for the component-by-component distinction.
 
-## Fourier training benchmark
+## Function approximation benchmark
 
 Measured on an **RTX 3090 (24 GB)** with 729 points and a
 `2 → 128 → 128 → 128 → 128 → 1` sigmoid MLP. Each order includes all mixed
