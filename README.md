@@ -67,6 +67,8 @@ measured with an empty cache for each order and includes graph capture and the
 first execution. The ms/epoch columns exclude compilation. PyTorch version:
 `2.11.0+cu128`; OS: Windows.
 
+The high-order speedup also appears when requesting only pure derivatives with respect to one or more variables (directions). For a single direction, cPDE's speedup over PyTorch + JIT grows from 2.8x at first order to 19.3x at sixth order. With three directions, the corresponding speedup grows from 1.9x to 27.4x. Thus, many interlinked mixed derivatives are not required for the high-order advantage.
+
 See [methodology, raw timings and reproduction](docs/benchmarks/fourier-rtx3090.md),
 including [actual public `net.train` timings](docs/benchmarks/fourier-rtx3090.md#public-training-api),
 which also include RPROP updates and safety checks.
