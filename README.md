@@ -3,9 +3,8 @@
 *An easy-to-use Python interface for forward and backward propagation with derivatives through sixth order, including mixed derivatives. CUDA and CPU backends.*
 
 ![Poisson equation on the unit disk with zero boundary values, followed by the cPDE code that minimizes its squared residual and boundary cost and trains the network.](docs/images/poisson-equation-and-code.png)
-
-The [Poisson disk example](examples/poisson_disk_vanilla.py) supplies the inputs
-and quadrature used above. [Walk through the cost and training calls](#poisson-disk).
+<sub>The [Poisson disk example](examples/poisson_disk_vanilla.py) supplies the inputs
+and quadrature used above. [Walk through the cost and training calls](#poisson-disk).</sub>
 
 Currently, **only fully connected multilayer perceptrons (MLPs)** are supported.
 
